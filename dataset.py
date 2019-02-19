@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import csv
 
-def load_IndianPines(pca=2,  recategorize=True, background=False):
+def load_IndianPines(pca=2,  recategorize=True, background=True):
     fname_csv = 'data/IndianPines.csv'
 
     with open(fname_csv,'r') as csv_file:
@@ -57,8 +57,6 @@ def load_IndianPines(pca=2,  recategorize=True, background=False):
         with open(fname_recategorize,'r') as f:
             reader = csv.reader(f)
             temp = next(reader)
-            n_old = int(temp[0])
-            n_new = int(temp[1])
             temp = next(reader)
             target_names = np.array(temp)
             temp = next(reader)

@@ -1,0 +1,10 @@
+.ipynb_checkpoints
+.vscode
+bin
+lib
+lib64
+include
+share
+etc
+__pycache__
+pyvenv.cfg

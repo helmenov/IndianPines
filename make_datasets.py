@@ -29,12 +29,11 @@ with zipfile.ZipFile('src/10_4231_R7RX991C.zip') as existing_zip:
 
 with zipfile.ZipFile('src/10_4231_R7RX991C/bundle.zip') as existing_zip:
     existing_zip.extract('aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif', srcRoot)
-get_ipython().system('rm -Rf src/10_4231_R7RX991C/bundle.zip')
+os.remove('src/10_4231_R7RX991C/bundle.zip')
 
 with zipfile.ZipFile('src/10_4231_R7RX991C/documentation/Site3_Project_and_Ground_Reference_Files.zip') as existing_zip:
     existing_zip.extract('Site3_Project_and_Ground_Reference_Files/19920612_AVIRIS_IndianPine_Site3_gr.tif',srcRoot)
-get_ipython().system('rm -Rf src/10_4231_R7RX991C/documentation')
-
+os.remove('src/10_4231_R7RX991C/documentation')
 
 # In[126]:
 
@@ -135,8 +134,6 @@ cordinate_df = pd.DataFrame([(x, y) for x in range(0,145) for y in range(0,145)]
 
 labels17 = pd.Series(labels17).astype('category',categories=cat17,ordered=False)
 labels17.name = 'categories#'
-labels10 = pd.Series(labels10).astype('category',categories=cat10,ordered=False)
-labels10.name = 'categories#'
 
 file_name = 'data/IndianPines'
 
@@ -144,6 +141,7 @@ file_name = file_name+'.csv'
 data = pd.concat([cordinate_df,feature_df],axis=1)
 df = pd.concat([data,labels17],axis=1)
 target_names = cat17
+hex_names = hex17
 for i,v in enumerate(hex17):
     hex_names[i] = '#{code}'.format(code=v)
 
