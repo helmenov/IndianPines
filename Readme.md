@@ -45,3 +45,10 @@ Bunch dataset.load_IndianPine(pca = 2, recategorize = True, background = True)
     - **.hex_names**：目的変数のカテゴリクラスに対応する16進数カラー
     - **.DESCR**：データセットの説明
     - **.filename**：データセットのCSVファイル名
+
+## make_datasets.py
+
+提供元のデータセットZipファイルからCSVファイルを作成する
+
+1. 提供元からデータセットをダウンロードして **src/10_4231_R7RX991C.zip** に保存する
+2. ```{shell} python make_datasets.py```
