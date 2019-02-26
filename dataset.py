@@ -57,7 +57,6 @@ def load_IndianPines(pca=2,  recategorize=True, background=True):
         with open(fname_recategorize,'r') as f:
             reader = csv.reader(f)
             temp = next(reader)
-            temp = next(reader)
             target_names = np.array(temp)
             temp = next(reader)
             hex_names = np.array(temp)

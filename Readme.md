@@ -52,3 +52,193 @@ Bunch dataset.load_IndianPine(pca = 2, recategorize = True, background = True)
 
 1. 提供元からデータセットをダウンロードして **src/10_4231_R7RX991C.zip** に保存する
 2. ```{shell} python make_datasets.py```
+
+
+```python
+import dataset
+from matplotlib import colors
+from matplotlib import pyplot
+import pandas as pd
+import numpy as np
+
+pca = 5
+recategorize=True
+background=False
+IndianPines = dataset.load_IndianPines(pca, recategorize, background)
+```
+
+
+```python
+dir(IndianPines)
+```
+
+
+
+
+    ['DESCR',
+     'cordinate_names',
+     'cordinates',
+     'feature_names',
+     'features',
+     'filename',
+     'hex_names',
+     'target',
+     'target_names']
+
+
+
+
+```python
+cordinates_df = pd.DataFrame(IndianPines.cordinates, columns=IndianPines.cordinate_names)
+features_df = pd.DataFrame(IndianPines.features, columns=IndianPines.feature_names)
+target_df = pd.DataFrame(IndianPines.target_names[IndianPines.target],columns=['category'])
+hex_df = pd.DataFrame(IndianPines.hex_names[IndianPines.target],columns=['hex-color'])
+data_df = pd.concat([cordinates_df,features_df,target_df,hex_df],axis=1)
+data_df = data_df.set_index(['column#','line#'])
+data_df.info()
+```
+
+    <class 'pandas.core.frame.DataFrame'>
+    MultiIndex: 10320 entries, (0, 0) to (143, 32)
+    Data columns (total 7 columns):
+    PC1          10320 non-null float64
+    PC2          10320 non-null float64
+    PC3          10320 non-null float64
+    PC4          10320 non-null float64
+    PC5          10320 non-null float64
+    category     10320 non-null object
+    hex-color    10320 non-null object
+    dtypes: float64(5), object(2)
+    memory usage: 607.0+ KB
+
+
+
+```python
+# Variable 'PC2'  of  head 5 samples
+display(data_df['PC2'].head(10))
+```
+
+
+    column#  line#
+    0        0        0.568190
+             1       -0.644221
+             2       -1.011396
+             3       -0.764560
+             4        0.154656
+             5        1.420347
+             6        2.019141
+             7        1.283642
+             8        0.505570
+             9        0.684659
+    Name: PC2, dtype: float64
+
+
+
+```python
+# datas of  sample cordicates(10,30) 
+display(data_df.loc[(10,30)])
+```
+
+
+    PC1          0.891344
+    PC2           1.88493
+    PC3          -1.26528
+    PC4         -0.561144
+    PC5         -0.261861
+    category     Soybeans
+    hex-color     #da70d6
+    Name: (10, 30), dtype: object
+
+
+
+```python
+display(pd.DataFrame(target_df['category'].value_counts()))
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Soybeans</th>
+      <td>4050</td>
+    </tr>
+    <tr>
+      <th>Corn</th>
+      <td>2502</td>
+    </tr>
+    <tr>
+      <th>Woods</th>
+      <td>1294</td>
+    </tr>
+    <tr>
+      <th>Grass</th>
+      <td>1244</td>
+    </tr>
+    <tr>
+      <th>Hay-windrowed</th>
+      <td>489</td>
+    </tr>
+    <tr>
+      <th>Bldg-Grass-Tree-Drives</th>
+      <td>380</td>
+    </tr>
+    <tr>
+      <th>Wheat</th>
+      <td>212</td>
+    </tr>
+    <tr>
+      <th>Stone-steel towers</th>
+      <td>95</td>
+    </tr>
+    <tr>
+      <th>Alfalfa</th>
+      <td>54</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+if background == False:
+   new_cordinates = pd.DataFrame([(x, y) for x in range(0,145) for y in range(0,145)],columns=['column#','line#'])
+   hex_old_cordinates = pd.concat([cordinates_df,hex_df],axis=1)
+   cordinates_hex = pd.merge(new_cordinates, hex_old_cordinates,on=['column#','line#'],how='left')
+   cordinates_hex = cordinates_hex.fillna('#ffffff')
+   hex_df = cordinates_hex
+
+pyplot.imshow(colors.to_rgba_array(hex_df['hex-color'].values).reshape([145,145,4]))
+                                                                
+```
+
+
+
+
+    <matplotlib.image.AxesImage at 0x7f28177a8ef0>
+
+
+
+
+![png](output_6_1.png)
+
