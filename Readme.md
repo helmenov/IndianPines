@@ -51,8 +51,10 @@ Bunch dataset.load_IndianPine(pca = 2, recategorize = True, background = True)
 提供元のデータセットZipファイルからCSVファイルを作成する
 
 1. 提供元からデータセットをダウンロードして **src/10_4231_R7RX991C.zip** に保存する
-2. ```{shell} python make_datasets.py```
+2. ```{bash} python make_datasets.py```
 
+
+## example
 
 ```python
 import dataset
