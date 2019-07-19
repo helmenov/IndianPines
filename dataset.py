@@ -6,7 +6,7 @@ import os
 import os.path
 
 def load_IndianPines(pca=2,  recategorize=True, background=True):
-    root_dir = os.getcwd()
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(root_dir,'data')
     fname_csv = os.path.join(data_dir,'IndianPines.csv')
 
