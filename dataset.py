@@ -2,9 +2,13 @@ from sklearn.datasets.base import Bunch
 import numpy as np
 import pandas as pd
 import csv
+import os
+import os.path
 
 def load_IndianPines(pca=2,  recategorize=True, background=True):
-    fname_csv = 'data/IndianPines.csv'
+    root_dir = os.getcwd()
+    data_dir = os.path.join(root_dir,'data')
+    fname_csv = os.path.join(data_dir,'IndianPines.csv')
 
     with open(fname_csv,'r') as csv_file:
         reader = csv.reader(csv_file)
@@ -53,7 +57,7 @@ def load_IndianPines(pca=2,  recategorize=True, background=True):
     # 17categories -> 10categories
     #
     if recategorize==True:
-        fname_recategorize = 'data/recategorize17to10.csv'
+        fname_recategorize = os.path.join(data_dir,'recategorize17to10.csv')
         with open(fname_recategorize,'r') as f:
             reader = csv.reader(f)
             temp = next(reader)
@@ -82,7 +86,8 @@ def load_IndianPines(pca=2,  recategorize=True, background=True):
         target = temp_df['category#'].values
     
    ## DESCR 
-    fname_descr = 'descr/IndianPines.rst'
+   descr_dir = os.path.join(root_dir,'descr')
+    fname_descr = os.path.join(descr_dir,'IndianPines.rst')
     with open(fname_descr,'r') as rst_file:
         DESCR = rst_file.read()
 
