@@ -244,3 +244,84 @@ pyplot.imshow(colors.to_rgba_array(hex_df['hex-color'].values).reshape([145,145,
 
 ![png](output_6_1.png)
 
+```python
+Traininglist='data/TrainingSampleExample.csv'
+trlist_df = pd.read_csv(Traininglist)
+mapcordinates_df = pd.DataFrame([(x, y) for x in range(0,145) for y in range(0,145)],columns=['column#','line#'])
+trlist_df = pd.concat([mapcordinates_df,trlist_df],axis=1)
+trlist_df = trlist_df.set_index(['column#','line#'])
+tr_df = pd.merge(data_df,trlist_df,on=['column#','line#'],how='left')
+
+# sampled by tr05
+trdata_df = tr_df.query('tr05>0')
+
+# incredients
+display(pd.DataFrame(trdata_df['category'].value_counts()))
+
+# map
+tr_cordinates_hex = pd.merge(mapcordinates_df,trdata_df['hex-color'],on=['column#','line#'],how='left')
+tr_cordinates_hex = tr_cordinates_hex.fillna('#ffffffff')
+pyplot.imshow(colors.to_rgba_array(tr_cordinates_hex['hex-color'].values).reshape([145,145,4]))
+```
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>category</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr>
+      <th>Bldg-Grass-Tree-Drives</th>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>Woods</th>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>Wheat</th>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>Grass</th>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>Stone-steel towers</th>
+      <td>15</td>
+    </tr>
+    <tr>
+            <th>Hay-windrowed</th>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>Corn</th>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>Soybeans</th>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>Alfalfa</th>
+      <td>15</td>
+    </tr>
+  </tbody>
+</table>
+</div>
