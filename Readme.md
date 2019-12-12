@@ -325,3 +325,14 @@ pyplot.imshow(colors.to_rgba_array(tr_cordinates_hex['hex-color'].values).reshap
   </tbody>
 </table>
 </div>
+
+
+
+
+    <matplotlib.image.AxesImage at 0x7f73007ad050>
+
+
+
+
+![png](output_7_2.png)
+
