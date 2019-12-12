@@ -22,7 +22,7 @@ IndianPines = dataset.load_IndianPines(pca, recategorize, background)
 dir(IndianPines)
 
 
-# In[20]:
+# In[3]:
 
 
 cordinates_df = pd.DataFrame(IndianPines.cordinates, columns=IndianPines.cordinate_names)
@@ -34,27 +34,27 @@ data_df = data_df.set_index(['column#','line#'])
 data_df.info()
 
 
-# In[21]:
+# In[4]:
 
 
 # Variable 'PC2'  of  head 5 samples
 display(data_df['PC2'].head(10))
 
 
-# In[22]:
+# In[5]:
 
 
 # datas of  sample cordicates(10,30) 
 display(data_df.loc[(10,30)])
 
 
-# In[23]:
+# In[6]:
 
 
 display(pd.DataFrame(target_df['category'].value_counts()))
 
 
-# In[24]:
+# In[7]:
 
 
 if background == False:
@@ -66,4 +66,26 @@ if background == False:
 
 pyplot.imshow(colors.to_rgba_array(hex_df['hex-color'].values).reshape([145,145,4]))
                                                                 
+
+
+# In[8]:
+
+
+Traininglist='data/TrainingSampleExample.csv'
+trlist_df = pd.read_csv(Traininglist)
+mapcordinates_df = pd.DataFrame([(x, y) for x in range(0,145) for y in range(0,145)],columns=['column#','line#'])
+trlist_df = pd.concat([mapcordinates_df,trlist_df],axis=1)
+trlist_df = trlist_df.set_index(['column#','line#'])
+tr_df = pd.merge(data_df,trlist_df,on=['column#','line#'],how='left')
+
+# sampled by tr05
+trdata_df = tr_df.query('tr05>0') 
+
+# incredients
+display(pd.DataFrame(trdata_df['category'].value_counts()))
+
+# map
+tr_cordinates_hex = pd.merge(mapcordinates_df,trdata_df['hex-color'],on=['column#','line#'],how='left')
+tr_cordinates_hex = tr_cordinates_hex.fillna('#ffffffff')
+pyplot.imshow(colors.to_rgba_array(tr_cordinates_hex['hex-color'].values).reshape([145,145,4]))
 
