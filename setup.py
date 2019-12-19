@@ -19,5 +19,5 @@ setup(
     #install_requires=read_requirements(),
     url='https://github.com/helmenov/IndianPines',
     #license=license,
-    #packages=find_packages(exclude=('tests', 'docs')),
+    packages=find_packages(dataset),
 )
