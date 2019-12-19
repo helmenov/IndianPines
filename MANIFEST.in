@@ -1,3 +1,2 @@
-graft descr
-graft src
-include data/*.csv
+recursive-include descr *
+recursive-include data *.csv
