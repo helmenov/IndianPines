@@ -1,2 +1,1 @@
-include descr src
-recursive-include data *.csv
+include descr/*.rst data/*.csv
