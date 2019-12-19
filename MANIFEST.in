@@ -1,1 +1,3 @@
-include descr/*.rst data/*.csv
+graft descr
+graft src
+include data/*.csv
