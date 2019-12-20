@@ -10,7 +10,6 @@ setup(
     author='Kotaro Sonoda',
     author_email='kotaro1976@gmail.com',
     url='https://github.com/helmenov/IndianPines',
-    license=MIT,
     packages=find_packages(),
     include_package_data=True,
 )
