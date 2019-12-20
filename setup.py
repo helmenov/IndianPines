@@ -6,7 +6,7 @@ setup(
     version="0.0.2",
     install_requires=["scikit-learn", "numpy","pandas"],
     description='Indian Pines datasets for scikit-learn',
-    long_description=Readme.md,
+    long_description=open('Readme.md',encoding='utf-8').read(),
     author='Kotaro Sonoda',
     author_email='kotaro1976@gmail.com',
     url='https://github.com/helmenov/IndianPines',
