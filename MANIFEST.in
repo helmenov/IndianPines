@@ -1,2 +1,2 @@
-recursive-include descr *
-recursive-include data *.csv
+recursive-include IndianPines/descr *
+recursive-include IndianPines/data *.csv
