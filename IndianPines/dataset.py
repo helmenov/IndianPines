@@ -85,8 +85,8 @@ def load_IndianPines(pca=2,  recategorize=True, background=True):
         features = temp_df[feature_names].values
         target = temp_df['category#'].values
     
-   ## DESCR 
-   descr_dir = os.path.join(root_dir,'descr')
+    ## DESCR 
+    descr_dir = os.path.join(root_dir,'descr')
     fname_descr = os.path.join(descr_dir,'IndianPines.rst')
     with open(fname_descr,'r') as rst_file:
         DESCR = rst_file.read()
