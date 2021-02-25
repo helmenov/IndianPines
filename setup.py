@@ -3,7 +3,7 @@ from setuptools import setup,find_packages
 
 setup(
     name="IndianPines",
-    version="0.0.2",
+    version="0.0.3",
     install_requires=["scikit-learn", "numpy","pandas"],
     description='Indian Pines datasets for scikit-learn',
     long_description=open('Readme.md',encoding='utf-8').read(),

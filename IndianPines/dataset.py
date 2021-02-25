@@ -1,4 +1,4 @@
-from sklearn.datasets.base import Bunch
+from sklearn.utils import Bunch
 import numpy as np
 import pandas as pd
 import csv
