@@ -57,7 +57,7 @@ Bunch dataset.load_IndianPine(pca = 2, recategorize = True, background = True)
 ## example
 
 ```python
-import dataset
+from IndianPines import dataset
 from matplotlib import colors
 from matplotlib import pyplot
 import pandas as pd
