@@ -6,7 +6,7 @@ authors = ["Kotaro SONODA <kotaro1976@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.8,<3.11"
 scipy = "^1.8.1"
 numpy = "^1.22.4"
 pandas = "^1.4.2"
@@ -21,6 +21,9 @@ sklearn = "^0.0"
 jupyter = "^1.0.0"
 notebook = "^6.4.12"
 matplotlib = "^3.5.2"
+
+#[tool.poetry-version-plugin]
+#source = "init"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

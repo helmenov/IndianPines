@@ -22,16 +22,16 @@ setup_kwargs = {
     'name': 'indianpines',
     'version': '0.0.5',
     'description': 'Indian Pines datasets for scikit-learn',
-    'long_description': None,
+    'long_description': 'None',
     'author': 'Kotaro SONODA',
     'author_email': 'kotaro1976@gmail.com',
-    'maintainer': None,
-    'maintainer_email': None,
-    'url': None,
+    'maintainer': 'None',
+    'maintainer_email': 'None',
+    'url': 'None',
     'packages': packages,
     'package_data': package_data,
     'install_requires': install_requires,
-    'python_requires': '>=3.10,<3.11',
+    'python_requires': '>=3.8,<3.11',
 }
 
 
