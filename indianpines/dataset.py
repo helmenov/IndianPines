@@ -63,10 +63,10 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         data_names = np.array(temp)
 
         data = np.empty((n_samples, n_features))
-        target = np.empty((n_samples,), dtype=np.int)
+        target = np.empty((n_samples,), dtype=int)
         for i, ir in enumerate(reader):
             data[i] = np.asarray(ir[:-1], dtype=np.float64)
-            target[i] = np.asarray(ir[-1], dtype=np.int)
+            target[i] = np.asarray(ir[-1], dtype=int)
 
     ## data: 220features +(x,y)cordinates
     ## target: 17categories include 'BackGround'
