@@ -14,13 +14,12 @@ install_requires = \
  'scikit-image>=0.19.3,<0.20.0',
  'scikit-learn>=1.1.1,<2.0.0',
  'scipy>=1.8.1,<2.0.0',
- 'sklearn>=0.0,<0.1',
  'tifffile>=2022.5.4,<2023.0.0',
  'tqdm>=4.64.0,<5.0.0']
 
 setup_kwargs = {
     'name': 'indianpines',
-    'version': '0.0.5',
+    'version': '0.0.8',
     'description': 'Indian Pines datasets for scikit-learn',
     'long_description': 'None',
     'author': 'Kotaro SONODA',

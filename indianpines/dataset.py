@@ -11,7 +11,30 @@ import shutil
 from tqdm import tqdm
 from PIL import Image
 
-def load(pca=2, include_background=True, recategorize_rule=None):
+def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAbsorptionChannels=True):
+    """IndianPines.dataset.load
+
+    load IndianPines's raw feature data (145 x 145 image shape, and 220 hyper-spectral channels) and return the sklearn format Bunch data.
+
+    Args:
+        - pca (float, optional): if integer pca >= 1, required dimensions in PCA. if float 0<pca<1, it mean the contribution ratio in PCA. if pca==0, it means no compression. Defaults to 0.
+        - include_background (bool, optional): Bunch includes background(un-studied) features and label-categories.  Defaults to True.
+        - recategorize_rule (str, optional): Some original categories are too small samples. this opt. select the recategorize rule file(CSV). Defaults to None.
+        - exclude_WaterAbsorptionChannels (bool, optional): Original Data includes the channels of water absorption. Gualtieri, et.al. remove those channels(AIPR1999), and the removed data has broadly used in now. Defaults to True.
+
+    Returns:
+        sklearn format Bunch: it include following attributes.
+        
+        - features (float array(nsamples,nch)): features. `nsamples` varied depends on whether includes background or not. `nch` varied depends on whether excludes WaterAbsorptionChannels or not.
+        - feature_names (str array(nch,)): column names of feature
+        - target (integer arrays(nsamples,)): ground truth categories' number labeled. 
+        - target_names (str array(ncategories,)): Category Name indexed range(0:ncategories). `ncategories` varied depend on the recategorize_rule
+        - cordinates (integer arrays(nsamples,2)): cordinates (x,y) for each samples
+        - cordinate_names (str array['column#', 'row#'])
+        - hex_names (str array(ncategories,)): Hex names for each category
+        - DESCR
+        - filename
+    """
     root_dir = os.path.dirname(os.path.abspath(__file__))
 
     data_dir = '_data'
@@ -41,9 +64,20 @@ def load(pca=2, include_background=True, recategorize_rule=None):
     ## data: 220features +(x,y)cordinates
     ## target: 17categories include 'BackGround'
     cordinates = data[:,0:2]
-    features = data[:,2:]
     cordinate_names = data_names[0:2]
+    features = data[:,2:]
     feature_names = data_names[2:]
+
+
+    #==========================================================================
+    #
+    # Reduce Water Absorption Channels
+    # [Cite] J.A. Gualtieri, R.F. Cromp, ``Support vector machines for hyperspectral remote sensing classification,'' 27th AIPR workshop: Advances in Computer-assisted Recognition, vol. 3584, pp. 221-232. SPIE, 1999.
+    #==========================================================================
+    if exclude_WaterAbsorptionChannels == True:
+        features = np.concatenate([features[:,:103],features[:,108:149],features[:,163:219]],axis=1)
+        feature_names = np.concatenate([feature_names[:103],feature_names[108:149],feature_names[163:219]],axis=0)
+
 
     #==========================================================================
     #
