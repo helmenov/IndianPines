@@ -54,12 +54,13 @@ load(
   if you recategorize in following new categories
 
   |BackGround|Alfalfa|Corn|Grass|Hay-windrowed|Soybeans|Wheat|Woods|Bldg-Grass-Tree-Drives|Stone-steel towers|
+  |---|---|---|---|---|---|---|---|---|---|
   |#ffffff|#ff0088|#0000ff|#007f7f|#a2b5cd|#da70d6|#ffa500|#884428|#00ff00|#ffff00|
 
   in following transform rule
 
-  |original||0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|
-  |---||---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+  |original|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
   |recategorized|0|1|2|2|2|3|3|0|4|0|5|5|5|6|7|8|9|
 
   , you should write following CSV file.
