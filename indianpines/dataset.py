@@ -283,7 +283,7 @@ def make_dataset():
     file_name_org = '_data/IndianPines_org'
 
     file_name = file_name+'.csv'
-    file_names_org = file_names_org+'.csv'
+    file_name_org = file_name_org+'.csv'
 
     data_p = pd.concat([cordinate_df,feature_df],axis=1)
     df = pd.concat([data_p,labels17_gic],axis=1)
