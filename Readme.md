@@ -75,6 +75,10 @@ load(
   - some original channels are effected by water absorption. Gualtieri and Cromp [SC99] have suggested to reduce [104-108], [150-163], and 220 -th channel (20-channels) for Analysis.
   - [SC99] J.A. Gualtieri, R.F. Cromp, ``Support vector machines for hyperspectral remote sensing classification,'' 27th AIPR workshop: Advances in Computer-assisted Recognition, vol. 3584, pp. 221-232. SPIE, 1999.
 
+- gt_gic: (default: True)
+  - ground truth labels from GIC's MAT-file
+  - if False, from original bundle's TIF-file
+
 
 #### Outputs
   - Bunch（compatiple with scikit-learn）

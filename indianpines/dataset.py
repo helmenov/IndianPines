@@ -10,8 +10,9 @@ import zipfile
 import shutil
 from tqdm import tqdm
 from PIL import Image
+from scipy import io as sio
 
-def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAbsorptionChannels=True):
+def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAbsorptionChannels=True, gt_gic=True):
     """IndianPines.dataset.load
 
     load IndianPines's raw feature data (145 x 145 image shape, and 220 hyper-spectral channels) and return the sklearn format Bunch data.
@@ -21,6 +22,7 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         - include_background (bool, optional): Bunch includes background(un-studied) features and label-categories.  Defaults to True.
         - recategorize_rule (str, optional): Some original categories are too small samples. this opt. select the recategorize rule file(CSV). Defaults to None.
         - exclude_WaterAbsorptionChannels (bool, optional): Original Data includes the channels of water absorption. Gualtieri, et.al. remove those channels(AIPR1999), and the removed data has broadly used in now. Defaults to True.
+        - gt_gip (bool, optional): whether labels used from gip's gt.mat or original gt.tif. (default: True, use gip's mat) 
 
     Returns:
         sklearn format Bunch: it include following attributes.
@@ -39,8 +41,13 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
 
     data_dir = '_data'
 
-    fname_csv = os.path.join(data_dir,'IndianPines.csv')
-
+    if gt_gic == True:
+        fname_csv = os.path.join(data_dir,'IndianPines.csv')
+    else:
+        fname_csv = os.path.join(data_dir,'IndianPines_org.csv')
+    if os.path.exists(fname_csv) == False:
+        make_dataset()
+    
     with open(fname_csv,'r') as csv_file:
         reader = csv.reader(csv_file)
         temp = next(reader) # line1
@@ -130,8 +137,20 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
     ## DESCR 
     descr_dir = os.path.join(root_dir,'resource')
     fname_descr = os.path.join(descr_dir,'IndianPines.rst')
-    with open(fname_descr,'r') as rst_file:
-        DESCR = rst_file.read()
+    with open(fname_descr,'r') as descr_file:
+        DESCR = descr_file.read()
+    
+    if gt_gic == True:
+        fname_labels_descr = os.path.join(descr_dir,'LabelsFromMAT.rst')
+    else:
+        fname_labels_descr = os.path.join(descr_dir,'LabelsFromTIF.rst')
+    with open(fname_labels_descr,'r') as labels_descr_file:
+        DESCR = DESCR + labels_descr_file.read()
+    
+    if exclude_WaterAbsorptionChannels == True:
+        fname_GC99 = os.path.join(descr_dir,'ReduceWaterAbsorption.rst')
+        with open(fname_GC99,'r') as GC99_file:
+            DESCR = DESCR + GC99_file.read()
 
     return Bunch(features=features, target=target.astype('int'), cordinates=cordinates.astype('int'), 
                  feature_names=list(feature_names), target_names=target_names, cordinate_names=list(cordinate_names), hex_names=hex_names,
@@ -238,7 +257,6 @@ def make_dataset():
 
     #hex2catno = lambda x: Clr[Clr['hex'==x]]['CategoryNo']
 
-
     labels17 = list()
     cat17 = Clr['Category#'].values.tolist()
     target17 = targethex17.values
@@ -248,6 +266,11 @@ def make_dataset():
                 labels17.append(cat17[j])
     labels17 = pd.Series(labels17,dtype='int')
     labels17 = pd.DataFrame(labels17,columns=['Category#'])
+    labels17_org = labels17
+
+    os.system('wget '+'https://www.ehu.eus/ccwintco/uploads/c/c4/Indian_pines_gt.mat'+" -O Indian_pines_gt.mat")
+    labels17_gic = sio.loadmat('Indian_pines_gt.mat')['indian_pines_gt']
+    labels17_gic = pd.DataFrame(labels17_gic.reshape(145*145,),columns=['Category#'])
 
     # cordinate_df: Cordinates
     # ==========
@@ -255,12 +278,16 @@ def make_dataset():
                             columns=['column#','row#'])
 
 
-
     file_name = '_data/IndianPines'
+    file_name_org = '_data/IndianPines_org'
 
     file_name = file_name+'.csv'
+    file_names_org = file_names_org+'.csv'
+
     data_p = pd.concat([cordinate_df,feature_df],axis=1)
-    df = pd.concat([data_p,labels17],axis=1)
+    df = pd.concat([data_p,labels17_gic],axis=1)
+    df_org = pd.concat([data_p,labels17_org],axis=1)
+    
     
     target_names = Clr['CategoryName']
     
@@ -271,6 +298,7 @@ def make_dataset():
 
     data = df.loc[:,df.columns!='Category#']
     #print(data)
+    data_org = df_org.loc[:,df_org.columns!='Category#']
 
     feature_names = data.columns
     
@@ -294,3 +322,13 @@ def make_dataset():
     df4 = pd.DataFrame([feature_names])
     df4.to_csv(file_name,header=False,index=False,mode='a')
     df.to_csv(file_name,header=False,index=False,mode='a')
+
+    df1 = pd.DataFrame([[n_samples, n_features]])
+    df1.to_csv(file_name_org,header=False,index=False)
+    df2 = pd.DataFrame([target_names])
+    df2.to_csv(file_name_org,header=False,index=False,mode='a')
+    df3 = pd.DataFrame([hex_names])
+    df3.to_csv(file_name_org,header=False,index=False,mode='a')
+    df4 = pd.DataFrame([feature_names])
+    df4.to_csv(file_name_org,header=False,index=False,mode='a')
+    df_org.to_csv(file_name_org,header=False,index=False,mode='a')

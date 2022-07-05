@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "IndianPines"
-version = "0.0.8"
+version = "0.0.9"
 description = "Indian Pines datasets for scikit-learn"
 authors = ["Kotaro SONODA <kotaro1976@gmail.com>"]
 license = "MIT"

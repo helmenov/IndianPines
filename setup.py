@@ -19,7 +19,7 @@ install_requires = \
 
 setup_kwargs = {
     'name': 'indianpines',
-    'version': '0.0.8',
+    'version': '0.0.9',
     'description': 'Indian Pines datasets for scikit-learn',
     'long_description': 'None',
     'author': 'Kotaro SONODA',
