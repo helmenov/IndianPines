@@ -30,10 +30,10 @@ import IndianPines as pines
 
 ```
 load(
-  pca,
-  include_background,
-  recategorize_rule,
-  exclude_WaterAbsorptionChannels
+  pca = 0,
+  include_background = True,
+  recategorize_rule = None,
+  exclude_WaterAbsorptionChannels = True,
 )
 ```
 
@@ -43,10 +43,10 @@ load(
   - `pca` == 0: No compression
   - 0 < `pca` < 1 (float): contribution ratio
   - `pca` >= 1 (int): number of dimensions after compression
-  - it effects the bunch shape (if >0, (145*145, 220)->(145*145, #_of_features))
+  - it effects the bunch shape (if >0, ($145 * 145$, $220$)->($145 * 145$, #_of_features))
 
 - `include_background` : whether the background (un-registered) samples are included in the Bunch or not. (default: `True`)
-  - it effects the bunch shape (if False, (145*145, 220)->(#_of_samples, 220))
+  - it effects the bunch shape (if False, ($145 * 145$, $220$)->(#_of_samples, $220$))
 
 - `recategorize_rule` : (default: None)
   - original data is categorized 16-category and background. But some categories are very few counted. Therefore you can reserve Transform Table as following format, and set it in this option.
@@ -78,11 +78,11 @@ load(
 
 #### Outputs
   - Bunch（compatiple with scikit-learn）
-    - **.features** : (124*124, #-features) numpy arrays in float raw
+    - **.features** : ($145 * 145$, #-features) numpy arrays in float raw
     - **.feature_names**：columns name of each features 
-    - **.target** ：(124*124, ) numpy array in integer (indexed in 'target_names')
+    - **.target** ：($145 * 145$, ) numpy array in integer (indexed in 'target_names')
     - **.target_names**：(#-categories, ) numpy array in strings. category names corresponding with indexes
-    - **.cordinates** ：(124*124, 2) numpy arrays in integer. x-y cordinates: column-numbers and row-numbers, for each samples 
+    - **.cordinates** ：($145 * 145$, 2) numpy arrays in integer. x-y cordinates: column-numbers and row-numbers, for each samples 
     - **.cordinate_names**：(2,) numpy array in strings. cordinates name: ['#columns', '#rows']
     - **.hex_names**：(#-categories,) numpy array in strings. hex-color format (ex, '#0000' for black) for each category indexed in 'target_names'
     - **.DESCR**：description for dataset
