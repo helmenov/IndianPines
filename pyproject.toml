@@ -16,9 +16,6 @@ tqdm = "^4.64.0"
 tifffile = "^2022.5.4"
 scikit-image = "^0.19.3"
 
-[tool.poetry.group.dev.dependencies]
-Sphinx = "^5.0.2"
-
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"
 notebook = "^6.4.12"
