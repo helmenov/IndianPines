@@ -162,6 +162,11 @@ def make_dataset():
     bundle_url = 'https://purr.purdue.edu/publications/1947/serve/1?render=archive'
 
     data_dir = '_data'
+    prefix = '_data/19920612_AVIRIS_IndianPine_Site3'
+    HypTif = prefix + '.tif'
+    GrTif = prefix + '_gr.tif'
+    ClrTsv = prefix + '_gr.clr'
+
     if os.path.exists(data_dir) == False:
         os.mkdir(data_dir)
         file_size = int(requests.head(bundle_url).headers["content-length"])
@@ -197,10 +202,6 @@ def make_dataset():
             dst=ClrTsv)
         shutil.rmtree('_data/10_4231_R7RX991C')
 
-    prefix = '_data/19920612_AVIRIS_IndianPine_Site3'
-    HypTif = prefix + '.tif'
-    GrTif = prefix + '_gr.tif'
-    ClrTsv = prefix + '_gr.clr'
 
 
     # %%　この時点で以下が揃う
