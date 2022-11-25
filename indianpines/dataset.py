@@ -12,6 +12,9 @@ from tqdm import tqdm
 from PIL import Image
 from scipy import io as sio
 
+recategorize17to10_csv = (
+    resources.files("IndianPines") / "recategolize_rules" / "recategorize17to10.csv"
+)
 def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAbsorptionChannels=True, gt_gic=True):
     """IndianPines.dataset.load
 
@@ -22,14 +25,14 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         - include_background (bool, optional): Bunch includes background(un-studied) features and label-categories.  Defaults to True.
         - recategorize_rule (str, optional): Some original categories are too small samples. this opt. select the recategorize rule file(CSV). Defaults to None.
         - exclude_WaterAbsorptionChannels (bool, optional): Original Data includes the channels of water absorption. Gualtieri, et.al. remove those channels(AIPR1999), and the removed data has broadly used in now. Defaults to True.
-        - gt_gip (bool, optional): whether labels used from gip's gt.mat or original gt.tif. (default: True, use gip's mat) 
+        - gt_gip (bool, optional): whether labels used from gip's gt.mat or original gt.tif. (default: True, use gip's mat)
 
     Returns:
         sklearn format Bunch: it include following attributes.
-        
+
         - features (float array(nsamples,nch)): features. `nsamples` varied depends on whether includes background or not. `nch` varied depends on whether excludes WaterAbsorptionChannels or not.
         - feature_names (str array(nch,)): column names of feature
-        - target (integer arrays(nsamples,)): ground truth categories' number labeled. 
+        - target (integer arrays(nsamples,)): ground truth categories' number labeled.
         - target_names (str array(ncategories,)): Category Name indexed range(0:ncategories). `ncategories` varied depend on the recategorize_rule
         - cordinates (integer arrays(nsamples,2)): cordinates (x,y) for each samples
         - cordinate_names (str array['column#', 'row#'])
@@ -39,7 +42,7 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
     """
     root_dir = os.path.dirname(os.path.abspath(__file__))
 
-    data_dir = '_data'
+    data_dir = '_dir'
 
     if gt_gic == True:
         fname_csv = os.path.join(data_dir,'IndianPines.csv')
@@ -47,7 +50,7 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         fname_csv = os.path.join(data_dir,'IndianPines_org.csv')
     if os.path.exists(fname_csv) == False:
         make_dataset()
-    
+
     with open(fname_csv,'r') as csv_file:
         reader = csv.reader(csv_file)
         temp = next(reader) # line1
@@ -55,11 +58,11 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         n_features = int(temp[1])
         temp = next(reader) # line2
         target_names = np.array(temp)
-        
+
         temp = next(reader) # line3
         hex_names = np.array(temp)
-        
-        temp = next(reader) 
+
+        temp = next(reader)
         data_names = np.array(temp)
 
         data = np.empty((n_samples, n_features))
@@ -90,18 +93,18 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
     #
     # dimension reduction
     #
-    if pca>0: 
+    if pca>0:
         from sklearn.decomposition import PCA
-        
+
         n_components = pca
         model = PCA(n_components=n_components, whiten=True)
-        
+
         model.fit(features)
         features = model.transform(features)
         feature_names =[]
         for s in range(model.n_components_):
             feature_names = feature_names + ["PC{}".format(s+1)]
-  
+
     #
     # 17categories -> 10categories
     #
@@ -116,7 +119,7 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
             temp = next(reader)
             recategorize_map = np.array(temp)
         target = recategorize_map[target].astype('int')
-    
+
     #
     # remove 'BackGround' categorized data
     #
@@ -133,26 +136,26 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         cordinates = temp_df[cordinate_names].values
         features = temp_df[feature_names].values
         target = temp_df['category#'].values
-    
-    ## DESCR 
+
+    ## DESCR
     descr_dir = os.path.join(root_dir,'resource')
     fname_descr = os.path.join(descr_dir,'IndianPines.rst')
     with open(fname_descr,'r') as descr_file:
         DESCR = descr_file.read()
-    
+
     if gt_gic == True:
         fname_labels_descr = os.path.join(descr_dir,'LabelsFromMAT.rst')
     else:
         fname_labels_descr = os.path.join(descr_dir,'LabelsFromTIF.rst')
     with open(fname_labels_descr,'r') as labels_descr_file:
         DESCR = DESCR + labels_descr_file.read()
-    
+
     if exclude_WaterAbsorptionChannels == True:
         fname_GC99 = os.path.join(descr_dir,'ReduceWaterAbsorption.rst')
         with open(fname_GC99,'r') as GC99_file:
             DESCR = DESCR + GC99_file.read()
 
-    return Bunch(features=features, target=target.astype('int'), cordinates=cordinates.astype('int'), 
+    return Bunch(features=features, target=target.astype('int'), cordinates=cordinates.astype('int'),
                  feature_names=list(feature_names), target_names=target_names, cordinate_names=list(cordinate_names), hex_names=hex_names,
                  DESCR=DESCR,  filename=fname_csv)
 
@@ -178,7 +181,7 @@ def make_dataset():
                 file.write(chunk)
                 pbar.update(len(chunk))
             pbar.close()
-    
+
         # 配布されている 10_4231_R7RX991C.zip を解凍して，
         # ハイパースペクトル画像TIFFデータとGR画像TIFFデータをsrcRootに置く．不要なものは削除する．
         with zipfile.ZipFile('_data/10_4231_R7RX991C.zip') as existing_zip:
@@ -205,9 +208,9 @@ def make_dataset():
 
 
     # %%　この時点で以下が揃う
-    # 1. ハイパースペクトル画像データ 19920612_AVIRIS_IndianPine_Site3.tif 
-    # 2. 土地被覆色付け画像データ 19920612_AVIRIS_IndianPine_Site3_gr.tif 
-    # 3. 「カテゴリ番号, 2のRGB値, カテゴリ名」の表　19920612_AVIRIS_IndianPine_Site3_gr.clr 
+    # 1. ハイパースペクトル画像データ 19920612_AVIRIS_IndianPine_Site3.tif
+    # 2. 土地被覆色付け画像データ 19920612_AVIRIS_IndianPine_Site3_gr.tif
+    # 3. 「カテゴリ番号, 2のRGB値, カテゴリ名」の表　19920612_AVIRIS_IndianPine_Site3_gr.clr
 
 
 
@@ -269,8 +272,9 @@ def make_dataset():
     labels17 = pd.DataFrame(labels17,columns=['Category#'])
     labels17_org = labels17
 
-    os.system('wget '+'https://www.ehu.eus/ccwintco/uploads/c/c4/Indian_pines_gt.mat'+" -O Indian_pines_gt.mat")
-    labels17_gic = sio.loadmat('Indian_pines_gt.mat')['indian_pines_gt']
+    gt_gic = os.path.join(data_dir,'Indian_pines_gt.mat')
+    os.system('wget '+'https://www.ehu.eus/ccwintco/uploads/c/c4/Indian_pines_gt.mat'+" -O " + gt_gic)
+    labels17_gic = sio.loadmat(gt_gic)['indian_pines_gt']
     labels17_gic = pd.DataFrame(labels17_gic.reshape(145*145,),columns=['Category#'])
 
     # cordinate_df: Cordinates
@@ -288,10 +292,10 @@ def make_dataset():
     data_p = pd.concat([cordinate_df,feature_df],axis=1)
     df = pd.concat([data_p,labels17_gic],axis=1)
     df_org = pd.concat([data_p,labels17_org],axis=1)
-    
-    
+
+
     target_names = Clr['CategoryName']
-    
+
     hex_names = list()
     for i,v in enumerate(Clr['hex'].values.tolist()):
         hex_names.append('#{code}'.format(code=v))
@@ -302,7 +306,7 @@ def make_dataset():
     data_org = df_org.loc[:,df_org.columns!='Category#']
 
     feature_names = data.columns
-    
+
     n_samples = data.shape[0]
     n_features = data.shape[1]
 

@@ -5,7 +5,7 @@ packages = \
 ['indianpines']
 
 package_data = \
-{'': ['*'], 'indianpines': ['resource/*']}
+{'': ['*'], 'indianpines': ['recategorize_rules/*', 'resource/*']}
 
 install_requires = \
 ['numpy>=1.22.4,<2.0.0',
@@ -19,7 +19,7 @@ install_requires = \
 
 setup_kwargs = {
     'name': 'indianpines',
-    'version': '0.1.1',
+    'version': '0.1.2',
     'description': 'Indian Pines datasets for scikit-learn',
     'long_description': 'None',
     'author': 'Kotaro SONODA',

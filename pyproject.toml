@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "IndianPines"
-version = "0.1.1"
+version = "0.1.2"
 description = "Indian Pines datasets for scikit-learn"
 authors = ["Kotaro SONODA <kotaro1976@gmail.com>"]
 license = "MIT"
@@ -15,6 +15,9 @@ requests = "^2.28.0"
 tqdm = "^4.64.0"
 tifffile = "^2022.5.4"
 scikit-image = "^0.19.3"
+
+[tool.poetry.group.dev.dependencies]
+Sphinx = "^5.0.2"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"
