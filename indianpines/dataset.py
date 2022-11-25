@@ -14,7 +14,7 @@ from PIL import Image
 from scipy import io as sio
 
 recategorize17to10_csv = (
-    resources.files("IndianPines") / "recategolize_rules" / "recategorize17to10.csv"
+    resources.files("indianpines") / "recategolize_rules" / "recategorize17to10.csv"
 )
 def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAbsorptionChannels=True, gt_gic=True):
     """IndianPines.dataset.load
