@@ -1,3 +1,4 @@
+from importlib import resources
 from sklearn.utils import Bunch
 import tifffile
 import numpy as np
