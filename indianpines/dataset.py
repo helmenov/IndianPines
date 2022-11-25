@@ -43,7 +43,7 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
     """
     root_dir = os.path.dirname(os.path.abspath(__file__))
 
-    data_dir = '_dir'
+    data_dir = '_data'
 
     if gt_gic == True:
         fname_csv = os.path.join(data_dir,'IndianPines.csv')
