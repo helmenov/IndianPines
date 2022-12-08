@@ -192,8 +192,8 @@ def make_dataset():
     ClrTsv = os.path.join(data_dir, prefix + '_gr.clr')
     gt_gic_Mat = os.path.join(data_dir,'Indian_pines_gt.mat')
 
-    if os.path.exists(data_dir) is False:
-        os.mkdir(data_dir)
+    if os.path.exists(HypTif) is False | os.path.exists(GrTif) is False | os.path.exists(ClrTsv) is False | os.path.exists(gt_gic_Mat) is False: 
+        if os.path.exists(data_dir}: os.mkdir(data_dir)
         file_size = int(requests.head(bundle_url).headers["content-length"])
 
         res = requests.get(bundle_url, stream=True)
