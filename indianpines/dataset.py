@@ -212,7 +212,7 @@ def make_dataset():
         os.remove(os.path.join(data_dir,'10_4231_R7RX991C.zip'))
 
         with zipfile.ZipFile(os.path.join(data_dir,'10_4231_R7RX991C','bundle.zip')) as existing_zip:
-            existing_zip.extract('aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif', os.path(data_dir,'10_4231_R7RX991C'))
+            existing_zip.extract('aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif', os.path.join(data_dir,'10_4231_R7RX991C'))
         os.remove(os.path.join(data_dir,'10_4231_R7RX991C','bundle.zip'))
 
         with zipfile.ZipFile(os.path.join(data_dir,'10_4231_R7RX991C','documentation','Site3_Project_and_Ground_Reference_Files.zip')) as existing_zip:
