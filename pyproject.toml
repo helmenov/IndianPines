@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "IndianPines"
-version = "0.1.5"
+version = "0.1.6"
 description = "Indian Pines datasets for scikit-learn"
 authors = ["Kotaro SONODA <kotaro1976@gmail.com>"]
 license = "MIT"
+packages = [{include="IndianPines"}]
+exclude = ["IndianPines/_data"]
+include = ["example.ipynb"]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"

@@ -2,10 +2,10 @@
 from setuptools import setup
 
 packages = \
-['indianpines']
+['IndianPines']
 
 package_data = \
-{'': ['*'], 'indianpines': ['recategorize_rules/*', 'resource/*']}
+{'': ['*'], 'IndianPines': ['resource/*', 'resource/recategorize_rules/*']}
 
 install_requires = \
 ['importlib>=1.0.4,<2.0.0',
@@ -20,7 +20,7 @@ install_requires = \
 
 setup_kwargs = {
     'name': 'indianpines',
-    'version': '0.1.5',
+    'version': '0.1.6',
     'description': 'Indian Pines datasets for scikit-learn',
     'long_description': 'None',
     'author': 'Kotaro SONODA',

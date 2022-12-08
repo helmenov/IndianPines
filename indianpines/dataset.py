@@ -13,9 +13,13 @@ from tqdm import tqdm
 from PIL import Image
 from scipy import io as sio
 
+data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '_data')
+resource_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resource')
+
 recategorize17to10_csv = (
-    resources.files("indianpines") / "recategolize_rules" / "recategorize17to10.csv"
+    os.path.join(resource_dir, "recategorize_rules","recategorize17to10.csv")
 )
+
 def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAbsorptionChannels=True, gt_gic=True):
     """IndianPines.dataset.load
 
@@ -43,10 +47,10 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
     """
     root_dir = os.path.dirname(os.path.abspath(__file__))
 
-    data_dir = '_data'
+    data_dir = os.path.join(root_dir, '_data')
 
     if gt_gic == True:
-        fname_csv = os.path.join(data_dir,'IndianPines.csv')
+        fname_csv = os.path.join(data_dir,'IndianPines_gic.csv')
     else:
         fname_csv = os.path.join(data_dir,'IndianPines_org.csv')
     if os.path.exists(fname_csv) == False:
@@ -72,10 +76,11 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
             data[i] = np.asarray(ir[:-1], dtype=np.float64)
             target[i] = np.asarray(ir[-1], dtype=int)
 
-    ## data: 220features +(x,y)cordinates
+    ## data: 220features +(x,y)coordinates
+    ## - coordinates(x,y) for y in height(n_rows) for x in width(n_height)
     ## target: 17categories include 'BackGround'
-    cordinates = data[:,0:2]
-    cordinate_names = data_names[0:2]
+    coordinates = data[:,0:2]
+    coordinate_names = data_names[0:2]
     features = data[:,2:]
     feature_names = data_names[2:]
 
@@ -88,7 +93,7 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
     if exclude_WaterAbsorptionChannels == True:
         features = np.concatenate([features[:,:103],features[:,108:149],features[:,163:219]],axis=1)
         feature_names = np.concatenate([feature_names[:103],feature_names[108:149],feature_names[163:219]],axis=0)
-
+        n_features = feature_names.size
 
     #==========================================================================
     #
@@ -98,6 +103,17 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         from sklearn.decomposition import PCA
 
         n_components = pca
+        model = PCA(n_components=n_components, whiten=True)
+
+        model.fit(features)
+        features = model.transform(features)
+        feature_names =[]
+        for s in range(model.n_components_):
+            feature_names = feature_names + ["PC{}".format(s+1)]
+    elif pca<0:
+        from sklearn.decomposition import PCA
+
+        n_components = n_features
         model = PCA(n_components=n_components, whiten=True)
 
         model.fit(features)
@@ -126,15 +142,15 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
     #
     if include_background == False:
         # DataFrame
-        cordinates_df = pd.DataFrame(cordinates, columns=cordinate_names,dtype='int')
+        coordinates_df = pd.DataFrame(coordinates, columns=coordinate_names,dtype='int')
         features_df = pd.DataFrame(features, columns=feature_names)
         target_df = pd.DataFrame(target,columns=['category#'],dtype='int')
-        temp_df = pd.concat([cordinates_df, features_df, target_df], axis=1)
+        temp_df = pd.concat([coordinates_df, features_df, target_df], axis=1)
         #
         temp_df = temp_df[temp_df['category#'] !=  0]
 
         #
-        cordinates = temp_df[cordinate_names].values
+        coordinates = temp_df[coordinate_names].values
         features = temp_df[feature_names].values
         target = temp_df['category#'].values
 
@@ -156,28 +172,33 @@ def load(pca=0, include_background=True, recategorize_rule=None, exclude_WaterAb
         with open(fname_GC99,'r') as GC99_file:
             DESCR = DESCR + GC99_file.read()
 
-    return Bunch(features=features, target=target.astype('int'), cordinates=cordinates.astype('int'),
-                 feature_names=list(feature_names), target_names=target_names, cordinate_names=list(cordinate_names), hex_names=hex_names,
+    return Bunch(features=features, target=target.astype('int'), coordinates=coordinates.astype('int'),
+                 feature_names=list(feature_names), target_names=target_names, coordinate_names=list(coordinate_names), hex_names=hex_names,
                  DESCR=DESCR,  filename=fname_csv)
 
 
 def make_dataset():
 
+
     bundle_url = 'https://purr.purdue.edu/publications/1947/serve/1?render=archive'
+    gic_url = 'https://www.ehu.eus/ccwintco/uploads/c/c4/'
 
-    data_dir = '_data'
-    prefix = '_data/19920612_AVIRIS_IndianPine_Site3'
-    HypTif = prefix + '.tif'
-    GrTif = prefix + '_gr.tif'
-    ClrTsv = prefix + '_gr.clr'
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(root_dir,'_data')
+    print(f'{data_dir=}')
+    prefix = '19920612_AVIRIS_IndianPine_Site3'
+    HypTif = os.path.join(data_dir, prefix + '.tif')
+    GrTif = os.path.join(data_dir, prefix + '_gr.tif')
+    ClrTsv = os.path.join(data_dir, prefix + '_gr.clr')
+    gt_gic_Mat = os.path.join(data_dir,'Indian_pines_gt.mat')
 
-    if os.path.exists(data_dir) == False:
+    if os.path.exists(data_dir) is False:
         os.mkdir(data_dir)
         file_size = int(requests.head(bundle_url).headers["content-length"])
 
         res = requests.get(bundle_url, stream=True)
         pbar = tqdm(total=file_size, unit="B", unit_scale=True)
-        with open("_data/10_4231_R7RX991C.zip", 'wb') as file:
+        with open(os.path.join(data_dir,"10_4231_R7RX991C.zip"), 'wb') as file:
             for chunk in res.iter_content(chunk_size=1024):
                 file.write(chunk)
                 pbar.update(len(chunk))
@@ -185,26 +206,26 @@ def make_dataset():
 
         # 配布されている 10_4231_R7RX991C.zip を解凍して，
         # ハイパースペクトル画像TIFFデータとGR画像TIFFデータをsrcRootに置く．不要なものは削除する．
-        with zipfile.ZipFile('_data/10_4231_R7RX991C.zip') as existing_zip:
-            existing_zip.extract('10_4231_R7RX991C/bundle.zip','_data')
-            existing_zip.extract('10_4231_R7RX991C/documentation/Site3_Project_and_Ground_Reference_Files.zip','_data')
-        os.remove('_data/10_4231_R7RX991C.zip')
+        with zipfile.ZipFile(os.path.join(data_dir,'10_4231_R7RX991C.zip')) as existing_zip:
+            existing_zip.extract('10_4231_R7RX991C/bundle.zip',data_dir)
+            existing_zip.extract('10_4231_R7RX991C/documentation/Site3_Project_and_Ground_Reference_Files.zip',data_dir)
+        os.remove(os.path.join(data_dir,'10_4231_R7RX991C.zip'))
 
-        with zipfile.ZipFile('_data/10_4231_R7RX991C/bundle.zip') as existing_zip:
-            existing_zip.extract('aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif', '_data/10_4231_R7RX991C')
-        os.remove('_data/10_4231_R7RX991C/bundle.zip')
+        with zipfile.ZipFile(os.path.join(data_dir,'10_4231_R7RX991C','bundle.zip')) as existing_zip:
+            existing_zip.extract('aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif', os.path(data_dir,'10_4231_R7RX991C'))
+        os.remove(os.path.join(data_dir,'10_4231_R7RX991C','bundle.zip'))
 
-        with zipfile.ZipFile('_data/10_4231_R7RX991C/documentation/Site3_Project_and_Ground_Reference_Files.zip') as existing_zip:
-            existing_zip.extract('Site3_Project_and_Ground_Reference_Files/19920612_AVIRIS_IndianPine_Site3_gr.tif','_data/10_4231_R7RX991C/documentation')
-            existing_zip.extract('Site3_Project_and_Ground_Reference_Files/19920612_AVIRIS_IndianPine_Site3_gr.clr','_data/10_4231_R7RX991C/documentation')
-        os.remove('_data/10_4231_R7RX991C/documentation/Site3_Project_and_Ground_Reference_Files.zip')
-        shutil.move(src='_data/10_4231_R7RX991C/aviris_hyperspectral_data/19920612_AVIRIS_IndianPine_Site3.tif',
+        with zipfile.ZipFile(os.path.join(data_dir,'10_4231_R7RX991C','documentation','Site3_Project_and_Ground_Reference_Files.zip')) as existing_zip:
+            existing_zip.extract('Site3_Project_and_Ground_Reference_Files/19920612_AVIRIS_IndianPine_Site3_gr.tif',os.path.join(data_dir,'10_4231_R7RX991C','documentation'))
+            existing_zip.extract('Site3_Project_and_Ground_Reference_Files/19920612_AVIRIS_IndianPine_Site3_gr.clr',os.path.join(data_dir,'10_4231_R7RX991C','documentation'))
+        os.remove(os.path.join(data_dir,'10_4231_R7RX991C','documentation','Site3_Project_and_Ground_Reference_Files.zip'))
+        shutil.move(src=os.path.join(data_dir,'10_4231_R7RX991C','aviris_hyperspectral_data','19920612_AVIRIS_IndianPine_Site3.tif'),
             dst=HypTif)
-        shutil.move(src='_data/10_4231_R7RX991C/documentation/Site3_Project_and_Ground_Reference_Files/19920612_AVIRIS_IndianPine_Site3_gr.tif',
+        shutil.move(src=os.path.join(data_dir,'10_4231_R7RX991C','documentation','Site3_Project_and_Ground_Reference_Files','19920612_AVIRIS_IndianPine_Site3_gr.tif'),
             dst=GrTif)
-        shutil.move(src='_data/10_4231_R7RX991C/documentation/Site3_Project_and_Ground_Reference_Files/19920612_AVIRIS_IndianPine_Site3_gr.clr',
+        shutil.move(src=os.path.join(data_dir,'10_4231_R7RX991C','documentation','Site3_Project_and_Ground_Reference_Files','19920612_AVIRIS_IndianPine_Site3_gr.clr'),
             dst=ClrTsv)
-        shutil.rmtree('_data/10_4231_R7RX991C')
+        shutil.rmtree(os.path.join(data_dir,'10_4231_R7RX991C'))
 
 
 
@@ -222,7 +243,7 @@ def make_dataset():
     srcimg = srcimg.reshape(-1,220) # (w*h, bands)
     columns=[]
     for s in range(220):
-        columns = columns + [f'c{s:02d}']
+        columns = columns + [f'c{s:03d}']
     feature_df = pd.DataFrame(srcimg, columns=columns)
 
     # display(feature_df.describe())
@@ -273,25 +294,24 @@ def make_dataset():
     labels17 = pd.DataFrame(labels17,columns=['Category#'])
     labels17_org = labels17
 
-    gt_gic = os.path.join(data_dir,'Indian_pines_gt.mat')
-    os.system('wget '+'https://www.ehu.eus/ccwintco/uploads/c/c4/Indian_pines_gt.mat'+" -O " + gt_gic)
-    labels17_gic = sio.loadmat(gt_gic)['indian_pines_gt']
+    os.system('wget '+ gic_url + 'Indian_pines_gt.mat'+" -O " + gt_gic_Mat)
+    labels17_gic = sio.loadmat(gt_gic_Mat)['indian_pines_gt']
     labels17_gic = pd.DataFrame(labels17_gic.reshape(145*145,),columns=['Category#'])
 
-    # cordinate_df: Cordinates
+    # coordinate_df: Coordinates
     # ==========
-    cordinate_df = pd.DataFrame([(x, y) for x in range(0,145) for y in range(0,145)],
+    coordinate_df = pd.DataFrame([(x, y) for y in range(0,145) for x in range(0,145)],
                             columns=['column#','row#'])
 
 
-    file_name = '_data/IndianPines'
-    file_name_org = '_data/IndianPines_org'
+    file_name_gic = 'IndianPines_gic.csv'
+    file_name_org = 'IndianPines_org.csv'
 
-    file_name = file_name+'.csv'
-    file_name_org = file_name_org+'.csv'
+    file_name_gic = os.path.join(data_dir, file_name_gic)
+    file_name_org = os.path.join(data_dir, file_name_org)
 
-    data_p = pd.concat([cordinate_df,feature_df],axis=1)
-    df = pd.concat([data_p,labels17_gic],axis=1)
+    data_p = pd.concat([coordinate_df,feature_df],axis=1)
+    df_gic = pd.concat([data_p,labels17_gic],axis=1)
     df_org = pd.concat([data_p,labels17_org],axis=1)
 
 
@@ -302,14 +322,14 @@ def make_dataset():
         hex_names.append('#{code}'.format(code=v))
     #print(hex_names)
 
-    data = df.loc[:,df.columns!='Category#']
+    data_gic = df_gic.loc[:,df_gic.columns!='Category#']
     #print(data)
     data_org = df_org.loc[:,df_org.columns!='Category#']
 
-    feature_names = data.columns
+    feature_names = data_gic.columns
 
-    n_samples = data.shape[0]
-    n_features = data.shape[1]
+    n_samples = data_gic.shape[0]
+    n_features = data_gic.shape[1]
 
     #display(data)
     #display(feature_names)
@@ -320,14 +340,14 @@ def make_dataset():
     #display(n_features)
 
     df1 = pd.DataFrame([[n_samples, n_features]])
-    df1.to_csv(file_name,header=False,index=False)
+    df1.to_csv(file_name_gic,header=False,index=False)
     df2 = pd.DataFrame([target_names])
-    df2.to_csv(file_name,header=False,index=False,mode='a')
+    df2.to_csv(file_name_gic,header=False,index=False,mode='a')
     df3 = pd.DataFrame([hex_names])
-    df3.to_csv(file_name,header=False,index=False,mode='a')
+    df3.to_csv(file_name_gic,header=False,index=False,mode='a')
     df4 = pd.DataFrame([feature_names])
-    df4.to_csv(file_name,header=False,index=False,mode='a')
-    df.to_csv(file_name,header=False,index=False,mode='a')
+    df4.to_csv(file_name_gic,header=False,index=False,mode='a')
+    df_gic.to_csv(file_name_gic,header=False,index=False,mode='a')
 
     df1 = pd.DataFrame([[n_samples, n_features]])
     df1.to_csv(file_name_org,header=False,index=False)
