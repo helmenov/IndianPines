@@ -193,7 +193,7 @@ def make_dataset():
     gt_gic_Mat = os.path.join(data_dir,'Indian_pines_gt.mat')
 
     if os.path.exists(HypTif) is False | os.path.exists(GrTif) is False | os.path.exists(ClrTsv) is False | os.path.exists(gt_gic_Mat) is False: 
-        if os.path.exists(data_dir): os.mkdir(data_dir)
+        if os.path.exists(data_dir) is False: os.mkdir(data_dir)
         file_size = int(requests.head(bundle_url).headers["content-length"])
 
         res = requests.get(bundle_url, stream=True)
@@ -226,6 +226,10 @@ def make_dataset():
         shutil.move(src=os.path.join(data_dir,'10_4231_R7RX991C','documentation','Site3_Project_and_Ground_Reference_Files','19920612_AVIRIS_IndianPine_Site3_gr.clr'),
             dst=ClrTsv)
         shutil.rmtree(os.path.join(data_dir,'10_4231_R7RX991C'))
+
+	res_mat = requests.get(gic_url).content
+	with open(gt_gic_Mat,'wb') as file:
+	    file.write(res_mat)
 
 
 
@@ -294,7 +298,6 @@ def make_dataset():
     labels17 = pd.DataFrame(labels17,columns=['Category#'])
     labels17_org = labels17
 
-    os.system('wget '+ gic_url + 'Indian_pines_gt.mat'+" -O " + gt_gic_Mat)
     labels17_gic = sio.loadmat(gt_gic_Mat)['indian_pines_gt']
     labels17_gic = pd.DataFrame(labels17_gic.reshape(145*145,),columns=['Category#'])
 
