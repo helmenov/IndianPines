@@ -211,7 +211,6 @@ def make_dataset():
         "https://purr.purdue.edu/publications/1947/serve/1?render=archive"
     )
     gic_url = "https://www.ehu.eus/ccwintco/uploads/c/c4/"
-
     root_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(root_dir, "_data")
     print(f"{data_dir=}")
@@ -397,7 +396,13 @@ def make_dataset():
     labels17 = pd.DataFrame(labels17, columns=["Category#"])
     labels17_org = labels17
 
-    labels17_gic = sio.loadmat(gt_gic_Mat)["indian_pines_gt"]
+    try:
+	labels17_gic = sio.loadmat(gt_gic_Mat)["indian_pines_gt"]
+    except ValueError as e:
+	print(e)
+	gt_gic_Mat = os.path.join(resource_dir, "Indian_pines_gt.mat")
+	labels17_gic = sio.loadmat(gt_gic_Mat)["indian_pines_gt"]
+
     labels17_gic = pd.DataFrame(
         labels17_gic.reshape(
             145 * 145,
