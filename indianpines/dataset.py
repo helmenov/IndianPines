@@ -320,11 +320,15 @@ def make_dataset():
         res_mat = requests.get(gic_url).content
         with open(gt_gic_Mat, "wb") as file:
             file.write(res_mat)
-        try:
-            sio.loadmat(gt_gic_Mat)
-        except ValueError as e:
-            print(e)
-            gt_gic_Mat = os.path.join(resource_dir, "Indian_pines_gt.mat")
+
+    #
+    # now cannot download mat-file from gic
+    #
+    try:
+        sio.loadmat(gt_gic_Mat)
+    except ValueError as e:
+        print(e)
+        gt_gic_Mat = os.path.join(resource_dir, "Indian_pines_gt.mat")
 
     # %%　この時点で以下が揃う
     # 1. ハイパースペクトル画像データ 19920612_AVIRIS_IndianPine_Site3.tif
