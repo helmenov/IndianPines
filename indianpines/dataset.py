@@ -322,7 +322,7 @@ def make_dataset():
             file.write(res_mat)
         try:
             sio.loadmat(gt_gic_Mat)
-        except VarueError as e:
+        except ValueError as e:
             print(e)
             gt_gic_Mat = os.path.join(resource_dir, "Indian_pines_gt.mat")
 
