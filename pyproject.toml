@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "IndianPines"
-version = "0.1.16"
+version = "0.1.17"
 description = "Indian Pines datasets for scikit-learn"
 authors = ["Kotaro SONODA <kotaro1976@gmail.com>"]
 license = "MIT"
@@ -10,7 +10,7 @@ include = ["example.ipynb"]
 readme = "Readme.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 scipy = "^1.8.1"
 numpy = "^1.22.4"
 pandas = "^1.4.2"
