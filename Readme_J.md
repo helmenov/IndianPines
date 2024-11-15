@@ -59,7 +59,7 @@ Bunch IndianPines.load(pca = 2, background = True, recategorize_rule = None, )
 ```python
 import IndianPines as pines
 from matplotlib import colors
-from matplotlib import pyplot 
+from matplotlib import pyplot
 import pandas as pd
 import numpy as np
 
@@ -87,11 +87,11 @@ np.max(IndianPines.target)
 
 
 ```python
-cordinates_df = pd.DataFrame(IndianPines.cordinates, columns=IndianPines.cordinate_names)
+coordinates_df = pd.DataFrame(IndianPines.coordinates, columns=IndianPines.coordinate_names)
 features_df = pd.DataFrame(IndianPines.features, columns=IndianPines.feature_names)
 target_df = pd.DataFrame(IndianPines.target_names[IndianPines.target],columns=['category'])
 hex_df = pd.DataFrame(IndianPines.hex_names[IndianPines.target],columns=['hex-color'])
-data_df = pd.concat([cordinates_df,features_df,target_df,hex_df],axis=1)
+data_df = pd.concat([coordinates_df,features_df,target_df,hex_df],axis=1)
 data_df = data_df.set_index(['column#','row#'])
 data_df.info()
 ```
@@ -99,15 +99,15 @@ data_df.info()
     <class 'pandas.core.frame.DataFrame'>
     MultiIndex: 10366 entries, (0, 0) to (143, 32)
     Data columns (total 7 columns):
-     #   Column     Non-Null Count  Dtype  
-    ---  ------     --------------  -----  
+     #   Column     Non-Null Count  Dtype
+    ---  ------     --------------  -----
      0   PC1        10366 non-null  float64
      1   PC2        10366 non-null  float64
      2   PC3        10366 non-null  float64
      3   PC4        10366 non-null  float64
      4   PC5        10366 non-null  float64
-     5   category   10366 non-null  object 
-     6   hex-color  10366 non-null  object 
+     5   category   10366 non-null  object
+     6   hex-color  10366 non-null  object
     dtypes: float64(5), object(2)
     memory usage: 617.8+ KB
 
@@ -135,7 +135,7 @@ display(data_df['PC2'].head(10))
 
 
 ```python
-# datas of  sample cordicates(10,30) 
+# datas of  sample cordicates(10,30)
 display(data_df.loc[(10,30)])
 ```
 
@@ -251,14 +251,14 @@ display(pd.DataFrame(target_df['category'].value_counts().sort_index()))
 
 ```python
 if conf['include_background'] == False:
-   new_cordinates = pd.DataFrame([(x, y) for x in range(0,145) for y in range(0,145)],columns=['column#','row#'])
-   hex_old_cordinates = pd.concat([cordinates_df,hex_df],axis=1)
-   cordinates_hex = pd.merge(new_cordinates, hex_old_cordinates,on=['column#','row#'],how='left')
-   cordinates_hex = cordinates_hex.fillna('#ffffff')
-   hex_df = cordinates_hex
+   new_coordinates = pd.DataFrame([(x, y) for y in range(0,145) for x in range(0,145)],columns=['column#','row#'])
+   hex_old_coordinates = pd.concat([coordinates_df,hex_df],axis=1)
+   coordinates_hex = pd.merge(new_coordinates, hex_old_coordinates,on=['column#','row#'],how='left')
+   coordinates_hex = cordinates_hex.fillna('#ffffff')
+   hex_df = coordinates_hex
 
 pyplot.imshow(colors.to_rgba_array(hex_df['hex-color'].values).reshape([145,145,4]))
-                                                                
+
 ```
 
 
@@ -269,30 +269,30 @@ pyplot.imshow(colors.to_rgba_array(hex_df['hex-color'].values).reshape([145,145,
 
 
 
-    
+
 ![png](output_6_1.png)
-    
+
 
 
 
 ```python
 Traininglist='data/TrainingSampleExample.csv'
 trlist_df = pd.read_csv(Traininglist)
-mapcordinates_df = pd.DataFrame([(x, y) for x in range(0,145) for y in range(0,145)],columns=['column#','row#'])
-trlist_df = pd.concat([mapcordinates_df,trlist_df],axis=1)
+mapcoordinates_df = pd.DataFrame([(x, y) for y in range(0,145) for x in range(0,145)],columns=['column#','row#'])
+trlist_df = pd.concat([mapcoordinates_df,trlist_df],axis=1)
 trlist_df = trlist_df.set_index(['column#','row#'])
 tr_df = pd.merge(data_df,trlist_df,on=['column#','row#'],how='left')
 
 # sampled by tr05
-trdata_df = tr_df.query('tr05>0') 
+trdata_df = tr_df.query('tr05>0')
 
 # incredients
 display(pd.DataFrame(trdata_df['category'].value_counts()))
 
 # map
-tr_cordinates_hex = pd.merge(mapcordinates_df,trdata_df['hex-color'],on=['column#','row#'],how='left')
-tr_cordinates_hex = tr_cordinates_hex.fillna('#ffffffff')
-pyplot.imshow(colors.to_rgba_array(tr_cordinates_hex['hex-color'].values).reshape([145,145,4]))
+tr_coordinates_hex = pd.merge(mapcoordinates_df,trdata_df['hex-color'],on=['column#','row#'],how='left')
+tr_coordinates_hex = tr_coordinates_hex.fillna('#ffffffff')
+pyplot.imshow(colors.to_rgba_array(tr_coordinates_hex['hex-color'].values).reshape([145,145,4]))
 ```
 
 
@@ -367,7 +367,7 @@ pyplot.imshow(colors.to_rgba_array(tr_cordinates_hex['hex-color'].values).reshap
 
 
 
-    
+
 ![png](output_7_2.png)
-    
+
 

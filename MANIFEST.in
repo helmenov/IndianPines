@@ -1,0 +1,3 @@
+include Readme.md
+recursive-include src/IndianPines/descr *
+recursive-include src/IndianPines/data *.csv
