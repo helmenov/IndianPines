@@ -474,3 +474,17 @@ def make_dataset():
     df4 = pd.DataFrame([feature_names])
     df4.to_csv(file_name_org, header=False, index=False, mode="a")
     df_org.to_csv(file_name_org, header=False, index=False, mode="a")
+
+if __name__ == "__main__":
+    pines = load()
+    count = list()
+    c_all = 0
+    for t,name in enumerate(pines.target_names):
+        c = pines.target[pines.target==t].size
+        count.append(c)
+        c_all += c
+    count.append(c_all)
+    count = np.array(count, dtype=int)
+
+    df_pines = pd.DataFrame(dict(target_names=np.hstack([pines.target_names,'SUM']),count=count))
+    print(df_pines)
