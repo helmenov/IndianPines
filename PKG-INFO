@@ -1,10 +1,11 @@
 Metadata-Version: 2.3
 Name: IndianPines
-Version: 0.1.19
+Version: 0.1.21
 Summary: Indian Pines datasets for scikit-learn
 Author-email: Kotaro SONODA <kotaro1976@gmail.com>
 License: MIT
 Requires-Python: >=3.10
+Requires-Dist: colormap>=1.2.0
 Requires-Dist: importlib>=1.0.4
 Requires-Dist: numpy>=2.1.3
 Requires-Dist: pandas>=2.2.3

@@ -12,6 +12,7 @@ import shutil
 from tqdm import tqdm
 from PIL import Image
 from scipy import io as sio
+from colormap import rgb2hex
 
 data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_data")
 resource_dir = os.path.join(
@@ -362,12 +363,7 @@ def make_dataset():
             [
                 targethex17,
                 pd.Series(
-                    format(
-                        targetimg17[i, 0] << 16
-                        | targetimg17[i, 1] << 8
-                        | targetimg17[i, 2],
-                        "06x",
-                    )
+                    rgb2hex(targetimg17[i,0],targetimg17[i,1],targetimg17[i,2]).lower()
                 ),
             ]
         )
@@ -385,7 +381,7 @@ def make_dataset():
     nR = Clr["R"].values
     nG = Clr["G"].values
     nB = Clr["B"].values
-    lHex = [format(nR[i] << 16 | nG[i] << 8 | nB[i], "06x") for i in range(17)]
+    lHex = [rgb2hex(nR[i], nG[i], nB[i]) for i in range(17)]
     nHex = np.array(lHex)
     SHex = pd.Series(nHex)
     hex_df = pd.DataFrame(SHex, columns=["hex"])
