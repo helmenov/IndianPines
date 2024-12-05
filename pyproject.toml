@@ -1,6 +1,6 @@
 [project]
 name = "IndianPines"
-version = "0.1.21"
+version = "0.1.22"
 description = "Indian Pines datasets for scikit-learn"
 license = "MIT"
 packages = [{include="src/IndianPines"}]

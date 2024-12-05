@@ -431,7 +431,7 @@ def make_dataset():
 
     hex_names = list()
     for i, v in enumerate(Clr["hex"].values.tolist()):
-        hex_names.append("#{code}".format(code=v))
+        hex_names.append("{code}".format(code=v))
     # print(hex_names)
 
     data_gic = df_gic.loc[:, df_gic.columns != "Category#"]
